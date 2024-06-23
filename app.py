@@ -8,6 +8,7 @@ import mysql.connector
 import hashlib
 import subprocess
 from flask import jsonify
+from operator import itemgetter 
 
 
 
@@ -254,13 +255,6 @@ def get_latest_model_name():
     return latest_model_name
 
 
-# Muat model yang sudah dilatih
-model = load_model('model_jst.h5')
-
-# Muat scaler dan encoder
-scaler = load('scaler.pkl')
-encoder = load('encoder.pkl')
-
 @app.route('/')
 def index():
     # Ambil semua data variabel dari database, group by variabel_tmv
@@ -322,12 +316,83 @@ def result():
     # Buat respons prediksi dan probabilitas
     probabilitas = {encoder.inverse_transform([idx])[0]: float(prob * 100) for idx, prob in enumerate(prediksi_pola_asuh[0])}
 
-    return render_template('result.html', prediksi=prediksi_pola_asuh_label[0], kepercayaan=prediksi_pola_asuh_score, probabilitas=probabilitas)
+    # Ambil keterangan terbesar dari tbl_m_output untuk setiap kelas
+    cursor = db.cursor(dictionary=True)
+    query = "SELECT output_tmo, keterangan_tmo FROM tbl_m_output WHERE output_tmo = %s"
+    kelas_terbesar = max(probabilitas.items(), key=itemgetter(1))[0]
+    cursor.execute(query, (kelas_terbesar,))
+    keterangan_terbesar = cursor.fetchone()
+
+    # Pastikan fetchone() tidak mengembalikan None sebelum mengakses 'keterangan_tmo'
+    if keterangan_terbesar:
+        output_info = {
+            'output_tmo': kelas_terbesar,
+            'keterangan_tmo': keterangan_terbesar['keterangan_tmo']
+        }
+    else:
+        output_info = {
+            'output_tmo': kelas_terbesar,
+            'keterangan_tmo': 'Informasi tidak tersedia untuk kelas ini'
+        }
+
+    cursor.close()
+
+    return render_template('result.html', prediksi=prediksi_pola_asuh_label[0], kepercayaan=prediksi_pola_asuh_score, probabilitas=probabilitas, output_info=output_info)
+
+    # Ambil data dari form
+    data = {key: int(value) for key, value in request.form.items()}
+
+    # Konversi data ke dalam DataFrame
+    df_baru = pd.DataFrame([data])
+
+    # Ambil informasi model terbaru dari database
+    latest_model_info = get_latest_model_info()
+    model_name = latest_model_info['nama_model_tmm']
+    scaler_name = latest_model_info['scaler_tmm']
+    encoder_name = latest_model_info['encoder_tmm']
+
+    # Muat model terbaru
+    model_path = f"model/{model_name}"
+    loaded_model = load_model(model_path)
+
+    # Muat scaler dan encoder terbaru
+    scaler_path = f"model/{scaler_name}"
+    encoder_path = f"model/{encoder_name}"
+    scaler = load(scaler_path)
+    encoder = load(encoder_path)
+
+    # Normalisasi data baru
+    df_baru_scaled = scaler.transform(df_baru)
+
+    # Memprediksi pola_asuh untuk data baru
+    prediksi_pola_asuh = loaded_model.predict(df_baru_scaled)
+    prediksi_pola_asuh_label = encoder.inverse_transform([prediksi_pola_asuh.argmax()])
+    prediksi_pola_asuh_score = prediksi_pola_asuh[0][prediksi_pola_asuh.argmax()] * 100
+
+    # Buat respons prediksi dan probabilitas
+    probabilitas = {encoder.inverse_transform([idx])[0]: float(prob * 100) for idx, prob in enumerate(prediksi_pola_asuh[0])}
+
+    # Ambil keterangan terbesar dari tbl_m_output untuk setiap kelas
+    cursor = db.cursor(dictionary=True)
+    query = "SELECT keterangan_tmo FROM tbl_m_output WHERE id_tmo = %s"
+    kelas_terbesar = max(probabilitas.items(), key=itemgetter(1))[0]
+    cursor.execute(query, (kelas_terbesar,))
+    keterangan_terbesar = cursor.fetchone()
+
+    # Pastikan fetchone() tidak mengembalikan None sebelum mengakses 'keterangan_tmo'
+    if keterangan_terbesar:
+        keterangan_terbesar = keterangan_terbesar['keterangan_tmo']
+    else:
+        keterangan_terbesar = "Informasi tidak tersedia untuk kelas ini"
+
+    cursor.close()
+
+    return render_template('result.html', prediksi=prediksi_pola_asuh_label[0], kepercayaan=prediksi_pola_asuh_score, probabilitas=probabilitas, output_info=keterangan_terbesar)
 
 @app.route('/logout')
 def logout():
     session.pop('username', None)  # Hapus informasi sesi yang relevan
-    return redirect(url_for('pindah_login'))  # Redirect ke halaman login atau halaman lain yang sesuai
+    return redirect(url_for('index'))  # Redirect ke halaman utama (misalnya halaman login)
 
 @app.route('/pindah_model')
 def pindah_model():

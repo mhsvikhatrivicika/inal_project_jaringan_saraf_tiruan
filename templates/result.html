@@ -24,6 +24,12 @@
                 </li>
             {% endfor %}
         </ul>
+        {% if output_info %}
+        <div class="mt-4">
+            <h3>Informasi tambahan untuk kelas dengan probabilitas tertinggi ({{ output_info.output_tmo }}):</h3>
+            <p><strong>Keterangan:</strong> {{ output_info.keterangan_tmo }}</p>
+        </div>
+        {% endif %}
         <a href="/" class="btn btn-primary mt-4">Kembali ke Form</a>
     </div>
 
