@@ -3,10 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Variabel</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Edit Variabel - Sistem Pakar Pola Asuh</title>
+    <!-- Link ke Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background-color: #007bff; /* Warna latar belakang header */
+            color: #fff; /* Warna teks header */
+            padding: 10px; /* Padding dalam header */
+            text-align: center; /* Teks rata tengah */
+            margin-bottom: 20px; /* Margin bawah untuk memisahkan dengan konten utama */
+        }
+    </style>
 </head>
 <body>
+    <!-- Header -->
+    <div class="header">
+        <h1>Sistem Pakar Pola Asuh</h1>
+        <p>Kata-kata konten Anda dapat ditambahkan di sini.</p>
+    </div>
+
     <div class="container">
         <h2 class="mt-4">Edit Variabel</h2>
 
@@ -39,9 +55,12 @@
             <button type="submit" class="btn btn-primary">Update Variabel</button>
         </form>
 
-        <a href="{{ url_for('tambah_variabel') }}" class="btn btn-secondary">Kembali</a>
+        <div class="container mt-4">
+            <a href="/pindah_variabel" class="btn btn-secondary">Kembali</a>
+        </div>
     </div>
 
+    <!-- Link ke Bootstrap JS dan Popper.js -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
