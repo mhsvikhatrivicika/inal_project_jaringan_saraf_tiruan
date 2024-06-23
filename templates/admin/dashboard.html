@@ -1,0 +1,20 @@
+{% if not session.username %}
+                <script type="text/javascript">
+                    window.location = "/";
+                </script>
+            {% endif %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuzzy Logic Form</title>
+</head>
+<body>
+    <h1>Hallo {{ username }}</h1>
+    <a href="/pindah_output">Tambah Output</a>
+    <a href="/pindah_model">Update Model Variabel</a>
+    <a href="/pindah_variabel">Tambah Variabel</a>
+    <a href="/logout">Logout</a>
+</body>
+</html>

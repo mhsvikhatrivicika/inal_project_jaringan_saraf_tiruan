@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Variabel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-4">Tambah Variabel</h2>
+
+        <!-- Form untuk menambah variabel baru -->
+        <form action="{{ url_for('tambah_variabel') }}" method="POST" class="mt-4 mb-4">
+            <div class="form-group">
+                <label for="nama_variabel">Nama Variabel</label>
+                <input type="text" class="form-control" id="nama_variabel" name="nama_variabel" required>
+            </div>
+            <div class="form-group">
+                <label for="kategori">Kategori</label>
+                <select class="form-control" id="kategori" name="kategori" required>
+                    <option value="rendah">Rendah</option>
+                    <option value="sedang">Sedang</option>
+                    <option value="tinggi">Tinggi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pola_asuh">Pola Asuh</label>
+                <select class="form-control" id="pola_asuh" name="pola_asuh" required>
+                    {% for output in outputs %}
+                    <option value="{{ output.id_tmo }}">{{ output.output_tmo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pertanyaan">Pertanyaan</label>
+                <textarea class="form-control" id="pertanyaan" name="pertanyaan" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Tambah Variabel</button>
+        </form>
+
+        <!-- Tabel yang menampilkan semua data variabel -->
+        <h2>Daftar Variabel</h2>
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama Variabel</th>
+                    <th>Kategori</th>
+                    <th>Pola Asuh</th>
+                    <th>Pertanyaan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for variabel in variabels %}
+                <tr>
+                    <td>{{ variabel.id_tmv }}</td>
+                    <td>{{ variabel.variabel_tmv }}</td>
+                    <td>{{ variabel.kategori_tmv }}</td>
+                    <td>{{ variabel.output_tmo }}</td>
+                    <td>{{ variabel.pertanyaan_tmv }}</td>
+                    <td>
+                        <a href="{{ url_for('edit_variabel', id=variabel.id_tmv) }}" class="btn btn-warning btn-sm">Edit</a>
+                        <form action="{{ url_for('hapus_variabel', id=variabel.id_tmv) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus variabel ini?')">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/pindah_admin">Back</a>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Penilaian</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Penilaian Pola Asuh</h1>
+        <form action="/result" method="post">
+            {% for variabel in variabels %}
+                <label for="{{ variabel['variabel_tmv'] }}">{{ variabel['pertanyaan_tmv'] }} (1-6):</label>
+                <input type="number" id="{{ variabel['variabel_tmv'] }}" name="{{ variabel['variabel_tmv'] }}" min="1" max="6" required>
+            {% endfor %}
+            <button type="submit">Submit</button>
+        </form>
+        <a href="/pindah_login">Login</a>
+    </div>
+</body>
+</html>

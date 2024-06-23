@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Output</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-4">Edit Output</h2>
+
+        <!-- Form untuk mengedit output -->
+        <form action="{{ url_for('edit_output', id=output.id_tmo) }}" method="POST" class="mt-4 mb-4">
+            <div class="form-group">
+                <label for="nama_output">Nama Output</label>
+                <input type="text" class="form-control" id="nama_output" name="nama_output" value="{{ output.output_tmo }}" required>
+            </div>
+            <div class="form-group">
+                <label for="keterangan">Keterangan</label>
+                <textarea class="form-control" id="keterangan" name="keterangan" rows="3" required>{{ output.keterangan_tmo }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Output</button>
+        </form>
+
+        <a href="{{ url_for('tambah_output') }}" class="btn btn-secondary">Kembali</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

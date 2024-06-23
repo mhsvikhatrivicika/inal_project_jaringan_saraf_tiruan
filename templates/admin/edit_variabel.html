@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Variabel</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-4">Edit Variabel</h2>
+
+        <!-- Form untuk mengedit variabel -->
+        <form action="{{ url_for('edit_variabel', id=variabel.id_tmv) }}" method="POST" class="mt-4 mb-4">
+            <div class="form-group">
+                <label for="nama_variabel">Nama Variabel</label>
+                <input type="text" class="form-control" id="nama_variabel" name="nama_variabel" value="{{ variabel.variabel_tmv }}" required>
+            </div>
+            <div class="form-group">
+                <label for="kategori">Kategori</label>
+                <select class="form-control" id="kategori" name="kategori" required>
+                    <option value="rendah" {{ 'selected' if variabel.kategori_tmv == 'rendah' else '' }}>Rendah</option>
+                    <option value="sedang" {{ 'selected' if variabel.kategori_tmv == 'sedang' else '' }}>Sedang</option>
+                    <option value="tinggi" {{ 'selected' if variabel.kategori_tmv == 'tinggi' else '' }}>Tinggi</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pola_asuh">Pola Asuh</label>
+                <select class="form-control" id="pola_asuh" name="pola_asuh" required>
+                    {% for output in outputs %}
+                    <option value="{{ output.id_tmo }}" {{ 'selected' if output.id_tmo == variabel.id_tmo else '' }}>{{ output.output_tmo }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="pertanyaan">Pertanyaan</label>
+                <textarea class="form-control" id="pertanyaan" name="pertanyaan" rows="3" required>{{ variabel.pertanyaan_tmv }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update Variabel</button>
+        </form>
+
+        <a href="{{ url_for('tambah_variabel') }}" class="btn btn-secondary">Kembali</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
